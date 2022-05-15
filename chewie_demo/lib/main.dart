@@ -43,14 +43,6 @@ class _ChewieDemoState extends State<ChewieDemo> {
     _videoPlayerController = VideoPlayerController.network(
         'https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-larges_not_found.mp4');
 
-    _videoPlayerController.addListener(() {
-      if (_videoPlayerController.value.hasError) {
-        debugPrint(
-            'Error details: ${_videoPlayerController.value.errorDescription}');
-      }
-    });
-
-    await Future.wait([_videoPlayerController.initialize()]);
     _createChewieController();
     setState(() {});
   }
@@ -60,11 +52,12 @@ class _ChewieDemoState extends State<ChewieDemo> {
       videoPlayerController: _videoPlayerController,
       autoPlay: true,
       looping: true,
-      // Errors can occur for example when trying to play a video
-      // from a non-existent URL
+      autoInitialize: true,
       errorBuilder: (context, errorMessage) {
-        debugPrint('errorMessage >>>> $errorMessage');
-        return Text(errorMessage, style: const TextStyle(color: Colors.white));
+        return Center(
+            child: Text(errorMessage,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white)));
       },
       hideControlsTimer: const Duration(seconds: 1),
     );
@@ -83,9 +76,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
           children: [
             Expanded(
               child: Center(
-                child: _chewieController != null &&
-                        _chewieController!
-                            .videoPlayerController.value.isInitialized
+                child: _chewieController != null
                     ? Chewie(
                         controller: _chewieController!,
                       )
